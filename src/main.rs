@@ -16,31 +16,19 @@ impl Game {
     }
 
     fn exits(&self) {
-        let mut index = 0;
-        let mut s = String::from(
-            format!("{} has {} exits:", &self.room().name, &self.room().exits.len())
-        );
+        println!("{} has {} exits:", &self.room().name, &self.room().exits.len());
 
-        for exit in &self.room().exits {
-            s = format!("{}\n({}) {}", s, index, self.rooms[*exit].name);
-            index += 1;
+        for (index, exit) in self.room().exits.iter().enumerate() {
+            println!("({}) {}", index, self.rooms[*exit].name);
         }
-
-        println!("{}", s);
     }
 
     fn view_inventory(&self) {
-        let mut index = 0;
-        let mut s = String::from(
-            format!("You have {} items:", self.inventory.len())
-        );
+        println!("You have {} items:", self.inventory.len());
 
-        for item in &self.inventory {
-            s = format!("{}\n({}) {}", s, index, item.name);
-            index += 1;
+        for (index, item) in self.inventory.iter().enumerate() {
+            println!("({}) {}", index, item.name);
         }
-
-        println!("{}", s);
     }
 
     fn move_room(&mut self, room: usize) {
@@ -73,17 +61,11 @@ impl Room {
     }
 
     fn inspect(&self) {
-        let mut index = 0;
-        let mut s = String::from(
-            format!("{} has {} items:", &self.name, &self.items.len())
-        );
+        println!("{} has {} items:", &self.name, &self.items.len());
 
-        for item in &self.items {
-            s = format!("{}\n({}) {}", s, index, item.name);
-            index += 1;
+        for (index, item) in self.items.iter().enumerate() {
+            println!("({}) {}", index, item.name);
         }
-
-        println!("{}", s);
     }
 }
 
