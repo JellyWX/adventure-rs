@@ -1,18 +1,18 @@
 use std::io::stdin;
 
 struct Game {
-    room: usize,
+    current_room: usize,
     inventory: Vec<Item>,
     rooms: Vec<Room>
 }
 
 impl Game {
     fn room(&self) -> &Room {
-        &self.rooms[self.room]
+        &self.rooms[self.current_room]
     }
 
     fn room_mut(&mut self) -> &mut Room {
-        &mut self.rooms[self.room]
+        &mut self.rooms[self.current_room]
     }
 
     fn exits(&self) {
@@ -32,14 +32,14 @@ impl Game {
     }
 
     fn move_room(&mut self, room: usize) {
-        self.room = self.room().exits[room];
+        self.current_room = self.room().exits[room];
     }
 
     fn take(&mut self, item: usize) -> &Item {
         let item = self.room_mut().items.remove(item);
         self.inventory.push(item);
 
-        &self.inventory[self.inventory.len() - 1]
+        &self.inventory.last().unwrap()
     }
 }
 
@@ -70,7 +70,7 @@ impl Room {
 }
 
 fn main() {
-    let mut rooms = vec![
+    let rooms = vec![
         Room {
             name: String::from("Bedroom"),
             description: String::from("A tidy, clean bedroom with 1 door and a balcony"),
@@ -97,7 +97,7 @@ fn main() {
     ];
 
     let mut player = Game {
-        room: 0,
+        current_room: 0,
         rooms: rooms,
         inventory: vec![]
     };
@@ -115,7 +115,7 @@ fn main() {
                     Some("look") => {
                         player.room().look();
                         player.exits();
-                    }
+                    },
 
                     Some("move") => {
 
@@ -138,15 +138,15 @@ fn main() {
                         player.move_room(room_no);
 
                         println!("You moved to {}", player.room().name);
-                    }
+                    },
 
                     Some("inventory") => {
                         player.view_inventory();
-                    }
+                    },
 
                     Some("inspect") => {
                         player.room().inspect();
-                    }
+                    },
 
                     Some("take") => {
                         let args: Vec<&str> = commands.collect();
@@ -157,7 +157,7 @@ fn main() {
                         }
 
                         let item_no: usize = match args[0].parse() {
-                            Ok(a) => {a},
+                            Ok(a) => a,
 
                             Err(e) => {
                                 println!("{}", e);
@@ -170,11 +170,10 @@ fn main() {
                         println!("You collected {}", item.name);
                     }
 
-                    None => {},
-
                     _ => {},
                 }
-            }
+            },
+
             Err(error) => panic!("Error occured reading stdin: {}", error),
         }
     }
